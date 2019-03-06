@@ -1,0 +1,17 @@
+---
+language: generic
+
+sudo: required
+dist: trusty
+
+services:
+- docker
+
+install:
+- docker build -t comment --target builder .
+
+script:
+- docker run --rm comment tslint
+
+notifications:
+  email: false

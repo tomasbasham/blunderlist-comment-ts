@@ -1,0 +1,21 @@
+{
+  "name": "blunderlist-comment-ts",
+  "version": "0.0.0",
+  "private": true,
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": "https://github.com/tomasbasham/blunderlist-comment-ts",
+  "license": "MIT",
+  "author": "",
+  "directories": {
+    "doc": "doc",
+    "tests": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "typescript": "~3.1.0"
+  }
+}
