@@ -1,7 +1,12 @@
 # blunderlist-comment-ts
 
-This README outlines the details of collaborating on this TypeScript
-application. A short introduction of this app could easily go here.
+A fictitious todo application through which to teach how to implement a
+microservice architecture. For the full list of services required to run this
+application visit
+[Blunderlist](https://github.com/tomasbasham?utf8=✓&tab=repositories&q=blunderlist)
+on GitHub.
+
+This repository implements an comment API that manages the
 
 ## Prerequisites
 
