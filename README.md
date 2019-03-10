@@ -28,6 +28,15 @@ You will need the following things properly installed on your computer.
 * `docker run --rm -it -p 8080:8080 --env-file .env comment-ts`
 * Visit your app at [http://localhost:8080](http://localhost:8080).
 
+### gRPC Health Check Service
+
+Health check service for gRPC servers. Under the `src` directory is a
+replacement for the Node.js [gRPC health check
+service](https://github.com/grpc/grpc-node/tree/master/packages/grpc-health-check)
+which is severely out of date. This has been built using the `protoc` tool from
+the most recent `health.proto`
+[definition](https://github.com/grpc/grpc/blob/be1ce0c4ccbf17ebeee9b7b057d40ff4e12f3479/src/proto/grpc/health/v1/health.proto).
+
 ## Further Reading / Useful Links
 
 * [TypeScript](https://www.typescriptlang.org/)
