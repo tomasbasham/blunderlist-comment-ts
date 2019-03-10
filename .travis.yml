@@ -8,6 +8,7 @@ services:
 - docker
 
 install:
+- docker run --rm -v $(pwd):/usr/src/app tomasbasham/protoc:3.6.1-node -I ./proto --js_out=import_style=commonjs,binary:./src/blunderlist_comment_v1 --grpc_out=plugins=protoc-gen-grpc:./src/blunderlist_comment_v1 --ts_out=plugins=protoc-gen-ts:./src/blunderlist_comment_v1 comment.proto
 - docker build -t comment --target builder .
 
 script:

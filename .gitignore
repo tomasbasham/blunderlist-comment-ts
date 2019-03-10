@@ -17,3 +17,7 @@
 /npm-debug.log*
 /testem.log
 /yarn-error.log
+
+# output of the protoc tool
+*_pb.js
+*_pb.d.ts
