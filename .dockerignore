@@ -1,4 +1,5 @@
 .git/
+chart/
 dist/
 node_modules/
 
