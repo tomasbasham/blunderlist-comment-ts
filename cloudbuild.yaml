@@ -1,0 +1,66 @@
+steps:
+
+  # Generate protobuf stubs.
+- name: tomasbasham/protoc:3.6.1-go
+  args: ['-I', './proto', '--go_out=plugins=grpc:.', 'comment.proto']
+
+  # Build the Docker image.
+- name: gcr.io/cloud-builders/docker
+  args: [
+    'build',
+    '--tag', 'eu.gcr.io/$PROJECT_ID/blunderlist/comment-ts:$COMMIT_SHA',
+    '--tag', 'eu.gcr.io/$PROJECT_ID/blunderlist/comment-ts:latest',
+    '--label', 'org.label-schema.build-date="$(date -Is)"',
+    '--label', 'org.label-schema.name="Blunderlist Comment API"',
+    '--label', 'org.label-schema.description="Go API backend for the Blunderlist Comment"',
+    '--label', 'org.label-schema.url="https://blunderlist.com"',
+    '--label', 'org.label-schema.vcs-url="https://github.com/tomasbasham/blunderlist-comment/"',
+    '--label', 'org.label-schema.vcs-ref="$COMMIT_SHA"',
+    '--label', 'org.label-schema.vendor="Tomas Basham"',
+    '--label', 'org.label-schema.version="$TAG_NAME"',
+    '--label', 'org.label-schema.schema-version="1.0"',
+    '.'
+  ]
+
+  # Push api image to registry.
+- name: gcr.io/cloud-builders/docker
+  args: ['push', 'eu.gcr.io/$PROJECT_ID/blunderlist/comment-ts:$COMMIT_SHA']
+
+  # Fetch Helm dependencies.
+- name: gcr.io/$PROJECT_ID/helm
+  args: ['dependency', 'build', 'deploy']
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=istio-cluster'
+
+  # Deploy release to Kubernetes Engine.
+- name: gcr.io/$PROJECT_ID/helm
+  args: [
+    'upgrade', 'blunderlist-comment', 'deploy',
+    '--namespace', 'blunderlist',
+    '--install',
+    '--set', 'image.repository=eu.gcr.io/$PROJECT_ID/blunderlist/comment-ts',
+    '--set', 'image.tag=$COMMIT_SHA',
+    '--set', 'proxy.service=comment.blunderlist.endpoints.$PROJECT_ID.cloud.goog',
+    '--set', 'database.password=$DATABASE_PASSWORD',
+    '--set', 'gcloudsql-proxy.serviceAccountKey=$DATABASE_SERVICE_ACCOUNT_KEY',
+    '--set', 'gcloudsql-proxy.cloudsql.instances[0].instance=postgres-development01',
+    '--set', 'gcloudsql-proxy.cloudsql.instances[0].project=$PROJECT_ID',
+    '--set', 'gcloudsql-proxy.cloudsql.instances[0].region=europe-west2-c',
+    '--set', 'gcloudsql-proxy.cloudsql.instances[0].port=5432',
+  ]
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=istio-cluster'
+  secretEnv:
+  - 'DATABASE_PASSWORD'
+  - 'DATABASE_SERVICE_ACCOUNT_KEY'
+
+images:
+- 'eu.gcr.io/$PROJECT_ID/blunderlist/comment-ts:latest'
+
+secrets:
+- kmsKeyName: $PROJECT_ID/locations/global/keyRings/secrets/cryptoKeys/key
+  secretEnv:
+    DATABASE_PASSWORD: "CiQAfM/DAGTQDwH268tJotefZG/BB4hCCjAwMgV4vcV3VDxe6PkSMgBAzsC7WLciWOglqCg7rk6js0E/D3wD8Gfc0YQZ1iprjGjSJOql+5pNtHeyBpyEoJxE"
+    DATABASE_SERVICE_ACCOUNT_KEY:

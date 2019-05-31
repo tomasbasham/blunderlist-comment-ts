@@ -10,5 +10,6 @@ node_modules/
 .travis.yml
 *.proto
 api-config.yaml
+cloudbuild.yaml
 Dockerfile
 README.md
